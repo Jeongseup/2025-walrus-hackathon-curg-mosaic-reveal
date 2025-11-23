@@ -346,15 +346,15 @@ async function main() {
     const { encryptedObject: encryptedData } = await sealClient.encrypt({
         threshold: 2,
         packageId: PACKAGE_ID,
-        id: encryptionId,
+        id: encryptionId, // 임의의 논스값 random nonce 생성
         data: dataBytes,
     });
     console.log(`✅ Secret key encrypted! Encrypted size: ${encryptedData.length} bytes`);
 
     // 6. Walrus에 업로드
     console.log(`\n📤 Uploading encrypted blob to Walrus...`);
-    const storageInfo = await storeBlob(encryptedData);
-    const blobInfo = extractBlobInfo(storageInfo.info);
+    const storageInfo = await storeBlob(encryptedData); // walrus에 encryptedData 업로드
+    const blobInfo = extractBlobInfo(storageInfo.info); // blobInfo 추출
 
     console.log(`\n✅ Upload successful!`);
     console.log(`📦 Status: ${blobInfo.status}`);
@@ -365,7 +365,7 @@ async function main() {
     console.log(`🔍 SuiScan URL: https://suiscan.xyz/testnet/object/${blobInfo.suiRef}`);
 
     // 7. Allowlist에 publish
-    await publishToAllowlist(allowlistId, capId, blobInfo.blobId);
+    await publishToAllowlist(allowlistId, capId, blobInfo.blobId); // allowlist에 blob publish, 여기서 컨트랙트 레벨에 업로드된 블롭과 연결이 생김 
 
     // 8. 결과 저장
     const outputDir = path.join(__dirname, '../tmp/walrus');
